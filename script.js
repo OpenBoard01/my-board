@@ -159,10 +159,11 @@ if(
 alert(
     "Firebaseへ保存しました"
 );
-}
 
 location.href =
     "threads.html";
+
+}
 
 async function loadThreadPage(){
 
