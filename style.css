@@ -62,3 +62,32 @@ button {
 
     white-space:nowrap;
 }
+
+.thread-form{
+
+    max-width:600px;
+
+    margin:50px auto;
+
+    padding:20px;
+}
+
+.thread-form label{
+
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+}
+
+.thread-form input,
+.thread-form textarea{
+
+    width:100%;
+}
+
+.thread-form textarea{
+
+    min-height:200px;
+}
