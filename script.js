@@ -161,6 +161,9 @@ alert(
 );
 }
 
+location.href =
+    "threads.html";
+
 async function loadThreadPage(){
 
     const titleArea =
