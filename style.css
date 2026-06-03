@@ -35,3 +35,32 @@ textarea,
 button {
     box-sizing: border-box;
 }
+
+.thread-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px;
+
+    border-bottom:1px solid #ddd;
+}
+
+.thread-title{
+
+    text-decoration:none;
+
+    flex:1;
+}
+
+.reply-count{
+
+    color:gray;
+
+    font-size:14px;
+
+    white-space:nowrap;
+}

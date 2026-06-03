@@ -55,21 +55,21 @@ async function loadThreads(){
 
                 const replyCount =
     thread.replies
-        ? thread.replies.length
-        : 0;
+        ? thread.replies.length + 1
+        : 1;
 
 list.innerHTML += `
-<div class="post">
+<div class="thread-row">
 
-<a href="thread.html?id=${doc.id}">
+<a
+class="thread-title"
+href="thread.html?id=${doc.id}">
 ${thread.title}
 </a>
 
-<br>
-
-<small>
-レス数: ${replyCount}
-</small>
+<span class="reply-count">
+(${replyCount})
+</span>
 
 </div>
 `;
