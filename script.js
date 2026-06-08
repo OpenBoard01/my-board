@@ -16,6 +16,20 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
+function escapeHtml(text){
+
+    if(text == null){
+        return "";
+    }
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 async function loadThreads(){
 
     const list =
@@ -60,7 +74,7 @@ list.innerHTML += `
 <a
 class="thread-title"
 href="thread.html?id=${doc.id}">
-${thread.title}
+${escapeHtml(thread.title)}
 </a>
 
 <span class="reply-count">
@@ -69,9 +83,7 @@ ${thread.title}
 
 </div>
 `;
-            });
-        }
-    );
+
 }
 
 async function createThread(){
@@ -199,7 +211,7 @@ style="cursor:pointer;color:blue;">
 
 :
 
-${thread.createdBy}
+${escapeHtml(thread.createdBy)}
 
 </strong>
 
@@ -210,7 +222,7 @@ ${createdDate}
 </small>
 
 <p>
-${thread.firstMessage}
+${escapeHtml(thread.firstMessage)}
 </p>
 
 </div>
@@ -354,7 +366,7 @@ ${replyNumber}
 
 :
 
-${reply.name}
+${escapeHtml(reply.name)}
 
 </strong>
 
@@ -393,12 +405,17 @@ function quoteReply(number){
 
 function formatReplyText(text){
 
-    return text.replace(
+    return escapeHtml(text)
 
-        />>(\d+)/g,
+        .replace(
+            />>(\d+)/g,
+            '<a href="#reply-$1">>>$1</a>'
+        )
 
-        '<a href="#reply-$1">>>$1</a>'
-    );
+        .replace(
+            /\n/g,
+            "<br>"
+        );
 }
 
 async function firebaseTest(){
