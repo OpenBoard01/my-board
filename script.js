@@ -281,8 +281,7 @@ async function postReply(){
 
             }),
 
-        lastUpdated:
-            Timestamp.now()
+        lastUpdated: serverTimestamp()
 
     }
 );
@@ -342,15 +341,15 @@ function loadReplies(){
 
                 area.innerHTML += `
 <div class="post"
-id="reply-${index + 1}">
+id="reply-${index + 2}">
 
 <strong>
 
 <span
-onclick="quoteReply(${index + 1})"
+onclick="quoteReply(${index + 2})"
 style="cursor:pointer;color:blue;">
 
-${index + 1}
+${index + 2}
 
 </span>
 
