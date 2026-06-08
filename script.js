@@ -6,17 +6,13 @@ import {
     addDoc,
     getDocs,
     serverTimestamp,
-    Timestamp,
     query,
     orderBy,
     doc,
     getDoc,
     updateDoc,
     arrayUnion,
-    deleteDoc,
-    limit,
     onSnapshot
-
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
@@ -126,38 +122,8 @@ if(!title || !message) return;
     }
 );
 
-const snapshot =
-    await getDocs(
-        query(
-            collection(
-                db,
-                "threads"
-            ),
-            orderBy(
-                "lastUpdated",
-                "asc"
-            )
-        )
-    );
-
-if(
-    snapshot.size > 60
-){
-
-    const oldestDoc =
-        snapshot.docs[0];
-
-    await deleteDoc(
-        doc(
-            db,
-            "threads",
-            oldestDoc.id
-        )
-    );
-}
-
 alert(
-    "Firebaseへ保存しました"
+    "スレッドを作成しました"
 );
 
 location.href =
@@ -210,11 +176,24 @@ async function loadThreadPage(){
     );
 
 firstPost.innerHTML = `
-
-<div class="post">
+<div
+class="post"
+id="reply-1">
 
 <strong>
-1 : ${thread.createdBy}
+
+<span
+onclick="quoteReply(1)"
+style="cursor:pointer;color:blue;">
+
+1
+
+</span>
+
+:
+
+${thread.createdBy}
+
 </strong>
 
 <p>
@@ -222,7 +201,6 @@ ${thread.firstMessage}
 </p>
 
 </div>
-
 `;
 }
 
@@ -242,9 +220,9 @@ async function postReply(){
         ).value;
 
     localStorage.setItem(
-    "userName",
-    name
-);
+        "userName",
+        name
+    );
 
     const message =
         document.getElementById(
@@ -261,34 +239,39 @@ async function postReply(){
         );
 
     await updateDoc(
-    threadRef,
-    {
+        threadRef,
+        {
 
-        replies:
-            arrayUnion({
+            replies:
+                arrayUnion({
 
-                name:
-                    name || "名無しさん",
+                    name:
+                        name || "名無しさん",
 
-                message:
-                    message,
+                    message:
+                        message,
 
-                date:
-                    new Date()
-                    .toLocaleString(
-                        "ja-JP"
-                    )
+                    date:
+                        new Date()
+                        .toLocaleString(
+                            "ja-JP"
+                        )
 
-            }),
+                }),
 
-        lastUpdated: serverTimestamp()
+            lastUpdated:
+                serverTimestamp()
 
-    }
-);
+        }
+    );
 
-alert(
-    "投稿しました"
-);
+    document.getElementById(
+        "message"
+    ).value = "";
+
+    alert(
+        "投稿しました"
+    );
 }
 
 function loadReplies(){
@@ -339,17 +322,20 @@ function loadReplies(){
             thread.replies.forEach(
                 (reply,index)=>{
 
-                area.innerHTML += `
+                    const replyNumber =
+                        index + 2;
+
+                    area.innerHTML += `
 <div class="post"
-id="reply-${index + 2}">
+id="reply-${replyNumber}">
 
 <strong>
 
 <span
-onclick="quoteReply(${index + 2})"
+onclick="quoteReply(${replyNumber})"
 style="cursor:pointer;color:blue;">
 
-${index + 2}
+${replyNumber}
 
 </span>
 
@@ -371,7 +357,8 @@ ${formatReplyText(reply.message)}
 
 </div>
 `;
-            });
+                }
+            );
         }
     );
 }
