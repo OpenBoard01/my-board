@@ -11,7 +11,6 @@ import {
     doc,
     getDoc,
     updateDoc,
-    arrayUnion,
     onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
@@ -260,6 +259,28 @@ async function postReply(){
 
     if(!message) return;
 
+    const repliesRef =
+        collection(
+            db,
+            "threads",
+            id,
+            "replies"
+        );
+
+    await addDoc(
+        repliesRef,
+        {
+            name:
+                name || "名無しさん",
+
+            message:
+                message,
+
+            createdAt:
+                serverTimestamp()
+        }
+    );
+
     const threadRef =
         doc(
             db,
@@ -270,27 +291,8 @@ async function postReply(){
     await updateDoc(
         threadRef,
         {
-
-            replies:
-                arrayUnion({
-
-                    name:
-                        name || "名無しさん",
-
-                    message:
-                        message,
-
-                    date:
-                        new Date()
-                        .toLocaleString(
-                            "ja-JP"
-                        )
-
-                }),
-
             lastUpdated:
                 serverTimestamp()
-
         }
     );
 
@@ -320,39 +322,46 @@ function loadReplies(){
     const id =
         params.get("id");
 
-    const threadRef =
-        doc(
+    const repliesRef =
+        collection(
             db,
             "threads",
-            id
+            id,
+            "replies"
+        );
+
+    const q =
+        query(
+            repliesRef,
+            orderBy(
+                "createdAt",
+                "asc"
+            )
         );
 
     onSnapshot(
-        threadRef,
-        (docSnap)=>{
-
-            if(
-                !docSnap.exists()
-            ){
-                return;
-            }
-
-            const thread =
-                docSnap.data();
+        q,
+        (snapshot)=>{
 
             area.innerHTML = "";
 
-            if(
-                !thread.replies
-            ){
-                return;
-            }
+            snapshot.forEach(
+                (docSnap,index)=>{
 
-            thread.replies.forEach(
-                (reply,index)=>{
+                    const reply =
+                        docSnap.data();
 
                     const replyNumber =
                         index + 2;
+
+                    const replyDate =
+                        reply.createdAt
+                            ? reply.createdAt
+                                .toDate()
+                                .toLocaleString(
+                                    "ja-JP"
+                                )
+                            : "日時不明";
 
                     area.innerHTML += `
 <div class="post"
@@ -377,7 +386,7 @@ ${escapeHtml(reply.name)}
 <br>
 
 <small>
-${reply.date || "日時不明"}
+${escapeHtml(replyDate)}
 </small>
 
 <p>
