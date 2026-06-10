@@ -356,6 +356,18 @@ function loadReplies(){
                 const currentNumber =
                     replyNumber++;
 
+                console.log(
+    "replyNumber",
+    replyNumber,
+    "currentNumber",
+    currentNumber
+);
+
+console.log(
+    "snapshot size",
+    snapshot.size
+);
+
                 const replyDate =
                     reply.createdAt
                         ? reply.createdAt
