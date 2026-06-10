@@ -340,40 +340,42 @@ function loadReplies(){
         );
 
     onSnapshot(
-        q,
-        (snapshot)=>{
+    q,
+    (snapshot)=>{
 
-            area.innerHTML = "";
+        area.innerHTML = "";
 
-            snapshot.forEach(
-                (docSnap,index)=>{
+        let replyNumber = 2;
 
-                    const reply =
-                        docSnap.data();
+        snapshot.forEach(
+            (docSnap)=>{
 
-                    const replyNumber =
-                        index + 2;
+                const reply =
+                    docSnap.data();
 
-                    const replyDate =
-                        reply.createdAt
-                            ? reply.createdAt
-                                .toDate()
-                                .toLocaleString(
-                                    "ja-JP"
-                                )
-                            : "日時不明";
+                const currentNumber =
+                    replyNumber++;
 
-                    area.innerHTML += `
+                const replyDate =
+                    reply.createdAt
+                        ? reply.createdAt
+                            .toDate()
+                            .toLocaleString(
+                                "ja-JP"
+                            )
+                        : "日時不明";
+
+                area.innerHTML += `
 <div class="post"
-id="reply-${replyNumber}">
+id="reply-${currentNumber}">
 
 <strong>
 
 <span
-onclick="quoteReply(${replyNumber})"
+onclick="quoteReply(${currentNumber})"
 style="cursor:pointer;color:blue;">
 
-${replyNumber}
+${currentNumber}
 
 </span>
 
@@ -395,10 +397,10 @@ ${formatReplyText(reply.message)}
 
 </div>
 `;
-                }
-            );
-        }
-    );
+            }
+        );
+    }
+);
 }
 
 function quoteReply(number){
